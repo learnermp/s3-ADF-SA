@@ -1,0 +1,44 @@
+{
+	"name": "DS_input_S3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_s3_input",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": "s3-mitee",
+				"fileName": "data.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Day",
+				"type": "String"
+			},
+			{
+				"name": "Weather",
+				"type": "String"
+			},
+			{
+				"name": "Temperature",
+				"type": "String"
+			},
+			{
+				"name": "Wind",
+				"type": "String"
+			},
+			{
+				"name": "Humidity",
+				"type": "String"
+			}
+		]
+	}
+}
