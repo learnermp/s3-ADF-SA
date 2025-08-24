@@ -14,6 +14,21 @@
 		"LS_Gen2_output_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://samp24aug2025.dfs.core.windows.net/"
+		},
+		"LS_kv_secret_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-mp-24aug-2025.vault.azure.net/"
+		},
+		"LS_s3_input_properties_typeProperties_accessKeyId": {
+			"type": "object",
+			"defaultValue": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_kv_secret",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "aes-mitee-accesskey"
+			}
 		}
 	},
 	"variables": {
@@ -36,6 +51,44 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_kv_secret')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('LS_kv_secret_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_s3_input')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AmazonS3",
+				"typeProperties": {
+					"serviceUrl": "https://s3.amazonaws.com",
+					"accessKeyId": "[parameters('LS_s3_input_properties_typeProperties_accessKeyId')]",
+					"secretAccessKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "LS_kv_secret",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "aws-mitee-secretaccesskey"
+					},
+					"authenticationType": "AccessKey"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_kv_secret')]"
+			]
 		}
 	]
 }
